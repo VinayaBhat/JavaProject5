@@ -3,13 +3,18 @@ package edu.pdx.cs410J.vibha2;
 import edu.pdx.cs410J.AbstractAirline;
 import edu.pdx.cs410J.ParserException;
 import org.junit.Test;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.ParseException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class XmlParserandDumper {
@@ -19,6 +24,7 @@ public class XmlParserandDumper {
      */
     @Test
     public void testingxmldump() throws IOException {
+
         StringWriter stringWriter = new StringWriter();
         stringWriter.flush();
         a1=new Airline<>("Alaska");
@@ -30,6 +36,42 @@ public class XmlParserandDumper {
         a1.addFlight(flight);
         XMLDumper td=new XMLDumper(stringWriter);
         td.dump(a1);
+    }
+
+    @Test
+    public void XMLDumperTest() throws ParserConfigurationException, IOException, SAXException, ParserException {
+        String content="<?xml version=\"1.0\" encoding=\"us-ascii\" standalone=\"no\"?>\n" +
+                "<!DOCTYPE airline SYSTEM \"http://www.cs.pdx.edu/~whitlock/dtds/airline.dtd\">\n" +
+                "<airline>\n" +
+                "    <name>Project4</name>\n" +
+                "    <flight>\n" +
+                "        <number>888</number>\n" +
+                "        <src>CLE</src>\n" +
+                "        <depart>\n" +
+                "            <date day=\"7\" month=\"1\" year=\"17\"/>\n" +
+                "            <time hour=\"7\" minute=\"0\"/>\n" +
+                "        </depart>\n" +
+                "        <dest>EGE</dest>\n" +
+                "        <arrive>\n" +
+                "            <date day=\"17\" month=\"1\" year=\"17\"/>\n" +
+                "            <time hour=\"19\" minute=\"0\"/>\n" +
+                "        </arrive>\n" +
+                "    </flight>\n" +
+                "</airline>";
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputSource is = new InputSource(new StringReader(content));
+
+        XMLParser parser = new XMLParser(builder.parse(is));
+        Airline<Flight> airline=new Airline("Project4");
+        Flight flight1=new Flight("888");
+        flight1.setSource("CLE ");
+        flight1.setDestination("EGE");
+        flight1.setDeparture_time("CLE 01/07/2017","7:00 am");
+        flight1.setArrival_time("01/17/2017","7:00 pm");
+        airline.addFlight(flight1);
+        assertThat(airline.toString(),containsString(parser.parse().toString()));
+
     }
 
 }

@@ -123,4 +123,23 @@ public class FlightTest {
     flight.setDestination("new jersey");
   }
 
+  @Test
+  public void arrivalgreaterthandeparture(){
+    Flight f1=new Flight("123");
+    f1.setSource("JFK");
+    f1.setDeparture_time("1/2/2020","10:30 pm");
+
+    Flight f2=new Flight("567");
+    f2.setSource("JFK");
+    f2.setDeparture_time("1/1/2020","10:30 pm");
+    f2.compareTo(f1);
+
+    Flight f11=new Flight("123");
+    f11.setSource("JFK");
+
+    Flight f22=new Flight("567");
+    f22.setSource("PDX");
+    f22.compareTo(f1);
+  }
+
 }
