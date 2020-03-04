@@ -40,6 +40,8 @@ public class XMLParser implements AirlineParser {
     @Override
     public Airline<Flight> parse() throws ParserException {
         Airline<Flight> airline = null;
+        SimpleDateFormat inf = new SimpleDateFormat("MM/dd/yy HH:mm");
+        SimpleDateFormat outf = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
         try {
             NodeList nodeList = document.getElementsByTagName("name");
             String airlinename = nodeList.item(0).getTextContent();
@@ -69,8 +71,14 @@ public class XMLParser implements AirlineParser {
                 Node t = depart.item(0);
                 Element ti = (Element) t;
                 NamedNodeMap tim = ti.getElementsByTagName("time").item(0).getAttributes();
-                String time = tim.getNamedItem("hour").getTextContent() + ":" + tim.getNamedItem("minute").getTextContent();
-                flight.setXmldeparture(date+" "+time);
+                String deptHour = tim.getNamedItem("hour").getTextContent();
+                String deptMinute = tim.getNamedItem("minute").getTextContent();
+                String deptfinal = date + " " + deptHour + ":" + deptMinute;
+                Date deptdate = inf.parse(deptfinal);
+                String deptstr = outf.format(deptdate);
+                String[] departure = deptstr.split(" ");
+                checkdatetime(departure[0], departure[1], departure[2]);
+                flight.setDeparture_time(departure[0],departure[1]+" "+departure[2]);
 
                 String dest = elem.getElementsByTagName("dest").item(0).getTextContent();
                 if (!Flight.flightsrcdestisvalid(dest)) {
@@ -85,9 +93,16 @@ public class XMLParser implements AirlineParser {
                 Node t1 = arrival.item(0);
                 Element ti1 = (Element) t1;
                 NamedNodeMap tim1 = ti1.getElementsByTagName("time").item(0).getAttributes();
-                String time1 = tim1.getNamedItem("hour").getTextContent() + ":" + tim1.getNamedItem("minute").getTextContent();
-                checkArrivalandDepTime(date, date1);
-                flight.setXmlarrival(date1+" "+time1);
+                String arrivalHour = tim1.getNamedItem("hour").getTextContent();
+                String arrivalMinute = tim1.getNamedItem("minute").getTextContent();
+                String arrivalfinal = date1 + " " + arrivalHour + ":" + arrivalMinute;
+                Date arrivaldate = inf.parse(arrivalfinal);
+                String arrstr = outf.format(arrivaldate);
+                String[] arrivals = arrstr.split(" ");
+                checkdatetime(arrivals[0], arrivals[1], arrivals[2]);
+                flight.setArrival_time(arrivals[0],arrivals[1]+" "+arrivals[2]);
+                checkArrivalandDepTime(deptstr, arrstr);
+
                 airline.addFlight(flight);
             }
         } catch (Exception e) {
@@ -100,7 +115,7 @@ public class XMLParser implements AirlineParser {
 
     boolean checkArrivalandDepTime(String depart,String arrive){
         try {
-            DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
             Date depdate = sdf.parse(depart);
             Date arrdate=sdf.parse(arrive);
             int check=depdate.compareTo(arrdate);
@@ -112,5 +127,17 @@ public class XMLParser implements AirlineParser {
             System.exit(1);
         }
         return true;
+    }
+
+    public void checkdatetime(String date, String time, String ampm) {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+        String finaldatetime = date + " " + time + " " + ampm;
+        try{
+            Date d = formatter.parse(finaldatetime);
+        }
+        catch (Exception e){
+            System.err.println("Please verify the format for datetime in the XML file");
+            System.exit(1);
+        }
     }
 }

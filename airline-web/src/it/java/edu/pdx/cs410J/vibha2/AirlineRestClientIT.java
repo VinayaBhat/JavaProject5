@@ -1,12 +1,16 @@
 package edu.pdx.cs410J.vibha2;
 
+import edu.pdx.cs410J.ParserException;
 import edu.pdx.cs410J.web.HttpRequestHelper;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.text.ParseException;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,40 +25,42 @@ public class AirlineRestClientIT {
   private static final String HOSTNAME = "localhost";
   private static final String PORT = System.getProperty("http.port", "8080");
 
-  private AirlineRestClient newAirlineRestClient() {
-    int port = Integer.parseInt(PORT);
-    return new AirlineRestClient(HOSTNAME, port);
-  }
-
-//  @Test
-//  public void test0RemoveAllDictionaryEntries() throws IOException {
-//    AirlineRestClient client = newAirlineRestClient();
-//    client.removeAllDictionaryEntries();
-//  }
-
-//  @Test
-//  public void test1EmptyServerContainsNoDictionaryEntries() throws IOException {
-//    AirlineRestClient client = newAirlineRestClient();
-//    Map<String, String> dictionary = client.getAllDictionaryEntries();
-//    assertThat(dictionary.size(), equalTo(0));
-//  }
-//
-//  @Test
-//  public void test2DefineOneWord() throws IOException {
-//    AirlineRestClient client = newAirlineRestClient();
-//    String testWord = "TEST WORD";
-//    String testDefinition = "TEST DEFINITION";
-//    client.addDictionaryEntry(testWord, testDefinition);
-//
-//    String definition = client.getDefinition(testWord);
-//    assertThat(definition, equalTo(testDefinition));
-//  }
-
+  /**
+   * Test for populateAirline method which posts new Airline
+   */
   @Test
-  public void test4MissingRequiredParameterReturnsPreconditionFailed() throws IOException {
-    AirlineRestClient client = newAirlineRestClient();
-    HttpRequestHelper.Response response = client.postToMyURL(Map.of());
-    assertThat(response.getContent(), containsString(Messages.missingRequiredParameter("word")));
-    assertThat(response.getCode(), equalTo(HttpURLConnection.HTTP_PRECON_FAILED));
+  public void populateFlightTest(){
+    AirlineRestClient ar=new AirlineRestClient(HOSTNAME,Integer.parseInt(PORT));
+    Flight flight = new Flight("5");
+    flight.setSource("JFK");
+    flight.setDestination("PDX");
+    flight.setDeparture_time("1/20/2020", "11:30 am");
+    flight.setArrival_time("1/21/2020", "10:30 am");
+    Airline airline=new Airline("Alaska");
+    airline.addFlight(flight);
+    ar.populateFlight(airline);
+
   }
+
+  /**
+   * Test for airlineAll info class which prints all airline flights when no src and dest found
+   * @throws SAXException
+   * @throws ParserException
+   * @throws ParseException
+   * @throws ParserConfigurationException
+   * @throws IOException
+   */
+  @Test
+  public void allAirlineInfotest() throws SAXException, ParserException, ParseException, ParserConfigurationException, IOException {
+    AirlineRestClient ar=new AirlineRestClient(HOSTNAME,Integer.parseInt(PORT));
+    Flight flight = new Flight("5");
+    flight.setSource("JFK");
+    flight.setDestination("PDX");
+    flight.setDeparture_time("1/20/2020", "11:30 am");
+    flight.setArrival_time("1/21/2020", "10:30 am");
+    Airline airline=new Airline("Alaska");
+    airline.addFlight(flight);
+    ar.getAirlineInfo(airline.getName());
+  }
+
 }

@@ -10,46 +10,6 @@ import java.util.*;
  * Airline server using REST.
  */
 public class Project5 {
-    private static final ArrayList<String> AIRLINE_PARAMS;
-    private static final ArrayList<String> AIRLINE_DESCRIPTOR;
-    private static final ArrayList<String> OPTION_PARAMS;
-    private static final ArrayList<String> OPTION_DESCRIPTIONS;
-
-
-    static {
-        AIRLINE_PARAMS = new ArrayList<String>(Arrays.asList(
-                "name",
-                "flightNumber",
-                "src",
-                "departureTime",
-                "dest",
-                "arriveTime")
-        );
-        AIRLINE_DESCRIPTOR = new ArrayList<String>(Arrays.asList(
-                "Then name of the airline",
-                "The flight number",
-                "Three-letter code of departure airport",
-                "Departure data and time (mm/dd/yyyy hh:mm AM/PM)",
-                "Three-letter code of arrival airport",
-                "Arrival date and time (mm/dd/yyyy hh:mm AM/PM)")
-        );
-        OPTION_DESCRIPTIONS = new ArrayList<String>(Arrays.asList(
-                "Host computer on which the server is running",
-                "Port on which the server is listening",
-                "Search for flights",
-                "Prints a description of the new flight",
-                "Prints a README for this project and exits")
-        );
-        OPTION_PARAMS = new ArrayList<String>(Arrays.asList(
-                "-host hostname",
-                "-port port",
-                "-search airline <source destination>",
-                "-print",
-                "-README")
-        );
-    }
-
-
      static  String hostName;
      static  String portstr;
      static boolean readMe;
@@ -63,6 +23,8 @@ public class Project5 {
      static String airlineName;
      static List<String> inputargs=new ArrayList<>();
 
+     static String MISSING_ARGUMENTS="MISSING COMMAND LINE ARGUMENTS";
+
 
     public static void main(String... args) {
         prettyprint = false;
@@ -70,7 +32,7 @@ public class Project5 {
         search = false;
         createFlight = false;
         if(args.length==0){
-            System.err.println("MISSING COMMAND LINE ARGUMENTS");
+            System.err.println(MISSING_ARGUMENTS);
             System.exit(1);
         }
         parseArguments(args);
@@ -89,23 +51,20 @@ public class Project5 {
             try {
                 port = Integer.parseInt(portstr);
             } catch (Exception e) {
-                System.err.println("PORT "+portstr+"MUST BE AN INT");
+                System.err.println("PORT "+portstr+" MUST BE AN INT");
                 System.exit(1);
             }
             AirlineRestClient client = new AirlineRestClient(hostName, port);
             try{
                 if(prettyprint && !createFlight){
-                    System.err.println("-print cannot be specified without new flight creation");
-                    System.exit(1);
+                    throw new Exception("-print cannot be specified without new flight creation");
                 }
                 if(search)
                 {
                     if(searchSrc == null || searchDest == null) {
-                       String output = client.getAirlineInfo(airlineName);
-                    }
+                       client.getAirlineInfo(airlineName);                    }
                     else {
-                        String output = client.getAirlineInfoSRCDEST(airlineName,searchSrc,searchDest);
-                    }
+                        client.getAirlineInfoSRCDEST(airlineName,searchSrc,searchDest);                    }
                 }else if(createFlight){
                     if(inputargs.size()==10){
                         Airline airline=new Airline(inputargs.get(0));
@@ -120,11 +79,9 @@ public class Project5 {
                             System.out.println("Airline Name: "+airlineName+" with "+flight.toString());
                         }
                     }else if(inputargs.size()<10){
-                        System.err.println("Less arguments to create Flight");
-                        System.exit(1);
+                       throw new Exception("Less arguments to create Flight");
                     }else{
-                        System.err.println("Extra arguments to create Flight");
-                        System.exit(1);
+                        throw new Exception("Extra arguments to create Flight");
                     }
 
                 }
@@ -165,9 +122,17 @@ public class Project5 {
             }else if(param.equals("-README")) {
                 readMe = true;
             }else if(param.equals("-port")){
-                portstr=listiterator.next();
+                if(listiterator.hasNext()) {
+                    portstr = listiterator.next();
+                }else{
+                    portstr=null;
+                }
             }else if(param.equals("-host")){
-                hostName=listiterator.next();
+                if(listiterator.hasNext()) {
+                    hostName = listiterator.next();
+                }else{
+                    hostName=null;
+                }
             }else{
                 break;
             }

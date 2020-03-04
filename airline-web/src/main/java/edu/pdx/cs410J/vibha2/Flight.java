@@ -26,26 +26,6 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     String destination;
     String arrival_time;
     String departure_time;
-    String xmlarrival;
-
-    public String getXmlarrival() {
-        return xmlarrival;
-    }
-
-    public void setXmlarrival(String xmlarrival) {
-        this.xmlarrival = xmlarrival;
-    }
-
-    public String getXmldeparture() {
-        return xmldeparture;
-    }
-
-    public void setXmldeparture(String xmldeparture) {
-        this.xmldeparture = xmldeparture;
-    }
-
-    String xmldeparture;
-
 
 
 
@@ -303,7 +283,7 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     public int compareTo(Flight t1) {
         int value1 = this.getSource().compareTo(t1.getSource());
         if (value1 == 0) {
-            int value2 = t1.getDepartureString().compareTo(this.getDepartureString());
+            int value2 = this.getDepartureString().compareTo(t1.getDepartureString());
             return value2;
         }
         return value1;

@@ -20,7 +20,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
-
+import java.util.Date;
 
 
 public class XMLDumper<Airline extends AbstractAirline> implements AirlineDumper<Airline>{
@@ -72,7 +72,9 @@ public class XMLDumper<Airline extends AbstractAirline> implements AirlineDumper
                 Element depart = document.createElement("depart");
                 flight.appendChild(depart);
 
-                String[] ddatetime=getDateandTime(fligthinfo.getXmldeparture());
+                String departd=fligthinfo.getDepartureString();
+
+                String[] ddatetime=getDateandTime(fligthinfo.getDepartureString());
 
                 Element date = document.createElement("date");
                 Attr day = document.createAttribute("day");
@@ -102,7 +104,7 @@ public class XMLDumper<Airline extends AbstractAirline> implements AirlineDumper
 
                 Element arrive = document.createElement("arrive");
                 flight.appendChild(arrive);
-                String[] adatetime=getDateandTime(fligthinfo.getXmlarrival());
+                String[] adatetime=getDateandTime(fligthinfo.getArrivalString());
 
                 Element date1 = document.createElement("date");
                 Attr day1 = document.createAttribute("day");
@@ -140,15 +142,20 @@ public class XMLDumper<Airline extends AbstractAirline> implements AirlineDumper
     }
 
     public String[] getDateandTime(String datetime){
+        SimpleDateFormat inf = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
+        SimpleDateFormat outf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+
         String[] result=new String[5];
         try{
+            Date deptDateTime = inf.parse(datetime);
+            String outd = outf.format(deptDateTime);
+            Date deptDate = outf.parse(outd);
             Calendar calendar = Calendar.getInstance();
-            DateFormat sdf = new SimpleDateFormat("MM/dd/yy hh:mm");
-            calendar.setTime(sdf.parse(datetime));
+            calendar.setTime(deptDate);
             result[0]=String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
             result[1]=String.valueOf(calendar.get(Calendar.MONTH)+1);
-            result[2]=String.valueOf(calendar.get(Calendar.YEAR));
-            result[3]=String.valueOf(calendar.get(Calendar.HOUR));
+            result[2]=""+calendar.get(Calendar.YEAR)+"";
+                result[3]=""+(calendar.get(Calendar.HOUR_OF_DAY))+"";
             result[4]=String.valueOf(calendar.get(Calendar.MINUTE));
 
         }catch (Exception e){

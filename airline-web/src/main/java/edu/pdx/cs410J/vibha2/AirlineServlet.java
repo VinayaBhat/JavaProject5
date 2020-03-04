@@ -48,7 +48,7 @@ public class AirlineServlet extends HttpServlet {
           String message = "No airline found!";
           response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
       }else if(!airlineMap.containsKey(airlineName)){
-          String message = "No airline by the name :"+airlineName+"found!";
+          String message = "No airline by the name :"+airlineName+" found!";
           response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
       }else if(airlineMap.containsKey(airlineName)){
           Airline airline=airlineMap.get(airlineName);
@@ -145,8 +145,10 @@ public class AirlineServlet extends HttpServlet {
       Flight flightobj=new Flight(flightnum);
       flightobj.setSource(src);
       flightobj.setDestination(dest);
-      flightobj.setXmldeparture(departstr);
-      flightobj.setXmlarrival(arrivalstr);
+      String[] depart=departstr.split(" ");
+      flightobj.setDeparture_time(depart[0],depart[1]+" "+depart[2]);
+      String[] arrival=arrivalstr.split(" ");
+      flightobj.setArrival_time(arrival[0],arrival[1]+" "+arrival[2]);
       airlineobj.addFlight(flightobj);
       airlineMap.put(airlinename,airlineobj);
 
@@ -165,7 +167,7 @@ public class AirlineServlet extends HttpServlet {
       this.airlineMap.clear();
 
       PrintWriter pw = response.getWriter();
-      pw.println(Messages.allDictionaryEntriesDeleted());
+      pw.println("All airlines deleted");
       pw.flush();
 
       response.setStatus(HttpServletResponse.SC_OK);

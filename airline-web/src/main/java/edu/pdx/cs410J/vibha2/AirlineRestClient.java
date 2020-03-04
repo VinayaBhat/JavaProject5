@@ -56,21 +56,10 @@ public class AirlineRestClient extends HttpRequestHelper
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = factory.newDocumentBuilder();
     InputSource is = new InputSource(new StringReader(content));
-
     XMLParser parser = new XMLParser(builder.parse(is));
     Airline airline = parser.parse();
-    Collection<Flight> flights=airline.getFlights();
-    if(flights.size()==0){
-      System.out.println("Airline "+airline.getName()+" has 0 flights !");
-    }
-    List<Flight> flightdata=new ArrayList<>();
-    for(Flight f:flights){
-      flightdata.add(f);
-    }
-   // Collections.sort(flightdata);
-    for (Flight f : flightdata) {
-      System.out.println(airline.AirlinetoString(f));
-    }
+    PrettyPrint pp=new PrettyPrint();
+    pp.sortFlightsandPrint(airline);
     throwExceptionIfNotOkayHttpStatus(response,content);
     return content;
   }
@@ -91,18 +80,8 @@ public class AirlineRestClient extends HttpRequestHelper
 
     XMLParser parser = new XMLParser(builder.parse(is));
     Airline airline = parser.parse();
-    Collection<Flight> flights=airline.getFlights();
-    if(flights.size()==0){
-      System.out.println("Airline "+airline.getName()+" has 0 flights with source "+src +" and destination "+dest);
-    }
-    List<Flight> flightdata=new ArrayList<>();
-    for(Flight f:flights){
-      flightdata.add(f);
-    }
-    //Collections.sort(flightdata);
-    for (Flight f : flightdata) {
-      System.out.println(airline.AirlinetoString(f));
-    }
+   PrettyPrint pp=new PrettyPrint();
+   pp.sortFlightsandPrint(airline);
     throwExceptionIfNotOkayHttpStatus(response,content);
     return content;
   }

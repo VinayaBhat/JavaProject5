@@ -73,7 +73,7 @@ public class Airline<T extends AbstractFlight> extends AbstractAirline<T>{
     public String AirlinetoString(Flight flight) throws ParseException {
         String src=flight.getSource();
         String dest=flight.getDestination();
-        return "Airline "+airline_name+" has Flight " + flight.getNumber() + " which departs from (" + flight.getSource()+") "+ AirportNames.getName(src) + " airport at " + flight.getXmldeparture() + " and arrives at (" + flight.getDestination() + ") "+ AirportNames.getName(dest)+" airport at " + flight.getXmlarrival();
+        return "Airline "+airline_name+" has Flight " + flight.getNumber() + " which departs from (" + flight.getSource()+") "+ AirportNames.getName(src) + " airport at " + flight.getDepartureString() + " and arrives at (" + flight.getDestination() + ") "+ AirportNames.getName(dest)+" airport at " + flight.getArrivalString()+". It is a "+Flight.findoutminutes(flight.departure_time,flight.arrival_time)+" minute flight.";
     }
 
 }
