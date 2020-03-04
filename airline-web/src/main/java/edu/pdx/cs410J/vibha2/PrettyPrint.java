@@ -18,5 +18,17 @@ public class PrettyPrint{
             System.out.println(airline.AirlinetoString(f));
         }
     }
+
+    public void sortFlightsandPrint2(Airline airline,String src,String dest) throws ParseException {
+        Collection<Flight> flights=airline.getFlights();
+        if(flights.size()==0){
+            System.out.println("Airline "+airline.getName()+" has 0 flights ! with Source "+src+" Destination "+dest);
+        }
+        List<Flight> flightdata = new ArrayList<>(flights);
+        Collections.sort(flightdata);
+        for (Flight f : flightdata) {
+            System.out.println(airline.AirlinetoString(f));
+        }
+    }
 }
 

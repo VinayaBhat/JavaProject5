@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.ParseException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This servlet ultimately provides a REST API for working with an
@@ -59,13 +57,11 @@ public class AirlineServlet extends HttpServlet {
               xd.dump(airline);
               response.getWriter().println(xd.XMLDumperWriter());
               response.setStatus(HttpServletResponse.SC_OK);
-              Collection<Flight> f=airline.getFlights();
-              for(Flight flight:f){
-                  try {
-                      System.out.println(airline.AirlinetoString(flight));
-                  } catch (ParseException e) {
-                      e.printStackTrace();
-                  }
+              PrettyPrint pp=new PrettyPrint();
+              try {
+                  pp.sortFlightsandPrint(airline);
+              } catch (ParseException e) {
+                  e.printStackTrace();
               }
           }else if(src!=null && dest!=null){
               Airline newairline=new Airline(airlineName);
@@ -78,13 +74,11 @@ public class AirlineServlet extends HttpServlet {
               xd.dump(newairline);
               response.getWriter().println(xd.XMLDumperWriter());
               response.setStatus(HttpServletResponse.SC_OK);
-              Collection<Flight> f1=newairline.getFlights();
-              for(Flight flight:f1){
-                  try {
-                      System.out.println(newairline.AirlinetoString(flight));
-                  } catch (ParseException e) {
-                      e.printStackTrace();
-                  }
+              PrettyPrint pp=new PrettyPrint();
+              try {
+                  pp.sortFlightsandPrint2(newairline,src,dest);
+              } catch (ParseException e) {
+                  e.printStackTrace();
               }
           }else{
               String message = "src or dest is not found in parameter";
