@@ -42,25 +42,5 @@ public class AirlineRestClientIT {
 
   }
 
-  /**
-   * Test for airlineAll info class which prints all airline flights when no src and dest found
-   * @throws SAXException
-   * @throws ParserException
-   * @throws ParseException
-   * @throws ParserConfigurationException
-   * @throws IOException
-   */
-  @Test
-  public void allAirlineInfotest() throws SAXException, ParserException, ParseException, ParserConfigurationException, IOException {
-    AirlineRestClient ar=new AirlineRestClient(HOSTNAME,Integer.parseInt(PORT));
-    Flight flight = new Flight("5");
-    flight.setSource("JFK");
-    flight.setDestination("PDX");
-    flight.setDeparture_time("1/20/2020", "11:30 am");
-    flight.setArrival_time("1/21/2020", "10:30 am");
-    Airline airline=new Airline("Alaska");
-    airline.addFlight(flight);
-    ar.getAirlineInfo(airline.getName());
-  }
-
+ 
 }
