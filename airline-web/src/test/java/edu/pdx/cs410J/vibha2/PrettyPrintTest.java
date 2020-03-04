@@ -84,4 +84,5 @@ public class PrettyPrintTest {
         airline.addFlight(flight1);
         assertThat(airline.toString(),containsString(parser.parse().toString()));
     }
+
 }

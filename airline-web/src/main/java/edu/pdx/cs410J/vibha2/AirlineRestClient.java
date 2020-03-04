@@ -53,6 +53,7 @@ public class AirlineRestClient extends HttpRequestHelper
     prop.put("name",airlineName);
     Response response = get(this.url, prop);
     String content = response.getContent();
+    throwExceptionIfNotOkayHttpStatus(response,content);
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = factory.newDocumentBuilder();
     InputSource is = new InputSource(new StringReader(content));
@@ -60,7 +61,6 @@ public class AirlineRestClient extends HttpRequestHelper
     Airline airline = parser.parse();
     PrettyPrint pp=new PrettyPrint();
     pp.sortFlightsandPrint(airline);
-    throwExceptionIfNotOkayHttpStatus(response,content);
     return content;
   }
 
@@ -74,6 +74,7 @@ public class AirlineRestClient extends HttpRequestHelper
     prop.put("dest",dest);
     Response response = get(this.url, prop);
     String content = response.getContent();
+    throwExceptionIfNotOkayHttpStatus(response,content);
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = factory.newDocumentBuilder();
     InputSource is = new InputSource(new StringReader(content));
@@ -82,7 +83,6 @@ public class AirlineRestClient extends HttpRequestHelper
     Airline airline = parser.parse();
    PrettyPrint pp=new PrettyPrint();
    pp.sortFlightsandPrint(airline);
-    throwExceptionIfNotOkayHttpStatus(response,content);
     return content;
   }
 
