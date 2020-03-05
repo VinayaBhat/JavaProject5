@@ -81,8 +81,13 @@ public class AirlineRestClient extends HttpRequestHelper
 
     XMLParser parser = new XMLParser(builder.parse(is));
     Airline airline = parser.parse();
-   PrettyPrint pp=new PrettyPrint();
-   pp.sortFlightsandPrint(airline);
+    if(src!=null && dest!=null){
+      PrettyPrint pp=new PrettyPrint();
+      pp.sortFlightsandPrint2(airline,src,dest);
+    }else {
+      PrettyPrint pp = new PrettyPrint();
+      pp.sortFlightsandPrint(airline);
+    }
     return content;
   }
 
